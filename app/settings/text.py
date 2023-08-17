@@ -41,7 +41,7 @@ def questions(message, type):
 
 def sendQuestions(call, data):
     text = f'''
-Заявка на выкуп товара
+Заявка на выкуп товара от <a href='tg://user?id={call.from_user.id}'>{call.from_user.full_name}</a>
 
 1) Товар для выкупа: {data['productLink']}
 2) Планируемое количество выкупов: {data['purchaseCount']}

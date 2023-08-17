@@ -117,7 +117,7 @@ async def callback(call: types.CallbackQuery, state: FSMContext):
         data = await state.get_data()
         id = db.addPurchase(call, data)
         await bot.send_message(call.from_user.id, f'{text.questions(call, "success")}', reply_markup=kb.newQuestion(call))
-        await bot.send_message(-1001916547261, f'{text.sendQuestions(call, data)}', reply_markup=kb.publish(id))
+        await bot.send_message(-1001916547261, f'{text.sendQuestions(call, data)}', reply_markup=kb.publish(call, id))
         await state.finish()
     else:
         await bot.send_message(call.from_user.id, f'{text.start(call)}', reply_markup=kb.menu(call))

@@ -11,7 +11,6 @@ import app.other.keyboards as kb
 import time
 import schedule
 import os.path
-import openai
 import app.settings.text as text
 import asyncio
 import pathlib

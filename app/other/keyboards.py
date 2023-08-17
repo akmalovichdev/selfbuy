@@ -63,8 +63,10 @@ def privacy(message):
     main.add(back)
     return main
 
-def publish(id):
-      main = InlineKeyboardMarkup()
-      publish = InlineKeyboardButton(text='Опубликовать', callback_data=f'publish-{id}')
-      main.add(publish)
-      return main
+def publish(message, id):
+    main = InlineKeyboardMarkup()
+    publish = InlineKeyboardButton(text='Опубликовать', callback_data=f'publish-{id}')
+    link_button = InlineKeyboardButton("Написать", url=f"tg://user?id={message.from_user.id}")
+    main.add(link_button)
+    main.add(publish)
+    return main
