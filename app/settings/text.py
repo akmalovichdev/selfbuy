@@ -130,7 +130,7 @@ def publish(id, type):
         productLink = db.select('id', id, 'distribution', 'productLink')
         cashback = db.select('id', id, 'distribution', 'cashback')
         algoritm = db.select('id', id, 'distribution', 'algoritm')
-        cashbackDay = db.select('id', id, 'cashbackDay', 'isProductRetrievalPlanned')
+        cashbackDay = db.select('id', id, 'cashbackDay', 'cashbackDay')
 
         text = f'''
 🔥 Разадача
