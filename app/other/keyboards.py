@@ -24,8 +24,10 @@ def back():
 
 def menu(message):
     main = InlineKeyboardMarkup()
-    questions = InlineKeyboardButton(text='Ответить на вопросы', callback_data='questions')
+    questions = InlineKeyboardButton(text='Выкуп товара', callback_data='questions')
+    distribution = InlineKeyboardButton(text='Раздача товара', callback_data='distribution')
     main.add(questions)
+    main.add(distribution)
     return main
 
 def newQuestion(message):
