@@ -1,7 +1,7 @@
 from aiogram.utils import executor
 from app.settings.config import dp, bot
 
-from app.handlers import admin, start, questions, publish
+from app.handlers import admin, start, questions, distribution, publish
 
 import schedule
 import app.settings.db as db

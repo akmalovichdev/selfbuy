@@ -6,4 +6,4 @@ async def publish(call: types.CallbackQuery):
 
     db.updatepurchase(call.data.split("-")[1])
 
-    await bot.send_message(db.selectConf('channel'), f'{text.publish(call.data.split("-")[1])}')
+    await bot.send_message(db.selectConf('channel'), f'{text.publish(call.data.split("-")[1], call.data.split("-")[2])}')

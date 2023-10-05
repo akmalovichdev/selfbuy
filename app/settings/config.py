@@ -6,5 +6,5 @@ import configs
 
 token = db.selectConf('botToken')
 
-bot = Bot(token=token, parse_mode='HTML')
+bot = Bot(token=configs.token, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())

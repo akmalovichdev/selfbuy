@@ -2,7 +2,9 @@ from app.settings import db
 
 def start(message):
     text = '''
-Привет. Через этого бота можно оставить заявку на выкуп товара, которая будет опубликована в канале для выкупов. 
+Привет!
+
+Через этого бота можно оставить заявку на выкуп или раздачу товара. Объявление будет опубликовано в канале для выкупов и раздач. 
 
 Сейчас тебе надо будет ответить на сколько простых вопросов
 '''
@@ -39,8 +41,35 @@ def questions(message, type):
         text = 'Все готово после модерации ваш товар будет опубликован в канале!'
     return text
 
-def sendQuestions(call, data):
-    text = f'''
+def distribution(message, type):
+    if type == 'productLink':
+        text = 'Ссылка на товар, который будете раздавать'
+    elif type == 'cashback':
+        text = 'Кэшбэк за товар (варианты ответа: 100%, 50%, либо свой вариант в ответном сообщении)'
+    elif type == 'algoritm':
+        text = 'Опишите алгоритм для заказа товара'
+    elif type == 'cashbackDay':
+        text = ' Через сколько дней переведете кэшбэк (варианты ответа: сразу, 7 дней, 14 дней, 21 день)'
+    elif type == 'isRulesAgreed':
+        text = '''
+Спасибо, Вы ответили на все вопросы. После модерации объявление будет опубликовано в канале. Вам останется только написать всем, кто откликнется. 
+
+В следующем сообщении подтвердите, что ознакомились с правилами и сообщение отправится на модерацию.
+'''
+    elif type == 'privacy':
+        text = '''
+Обратите внимание, что Вы выбрали опцию "Раздача". Это означает, что покупатель оставляет товар себе, при этом вы должны перевести кэшбэк покупателю в течение оговоренного срока. 
+
+Вся ответственность за перевод средств покупателю лежит на мне. Организаторы канала не проверяли пользователей и не несут отвественности за вашу коммуникацию.
+'''
+    elif type == 'success':
+        text = 'Все готово после модерации ваш товар будет опубликован в канале!'
+    return text
+
+def sendQuestions(call, data, type):
+    if type == 'questions':
+
+        text = f'''
 Заявка на выкуп товара от <a href='tg://user?id={call.from_user.id}'>{call.from_user.full_name}</a>
 
 1) Товар для выкупа: {data['productLink']}
@@ -56,21 +85,33 @@ def sendQuestions(call, data):
 
 Ставьте + в комментариях, продавец свяжется с вами для организации выкупа.
 '''
+    elif type == 'distribution':
+        text = f'''
+Заявка на раздачу товара от <a href='tg://user?id={call.from_user.id}'>{call.from_user.full_name}</a>
+
+1) Товар для раздачи: {data['productLink']}
+2) Кэшбэк за товар: {data['cashback']}
+3) Алгоритм заказа товара: {data['algoritm']}
+4) Через сколько дней переведут кэшбэк: {data['cashbackDay']}
+
+Ставьте + в комментариях, продавец свяжется с вами для организации выкупа.
+'''
     return text
 
-def publish(id):
 
-    productLink = db.select('id', id, 'purchases', 'productLink')
-    purchaseCount = db.select('id', id, 'purchases', 'purchaseCount')
-    purchasePurpose = db.select('id', id, 'purchases', 'purchasePurpose')
-    isProductRetrievalPlanned = db.select('id', id, 'purchases', 'isProductRetrievalPlanned')
-    cityForPurchase = db.select('id', id, 'purchases', 'cityForPurchase')
-    purchaseAlgorithm = db.select('id', id, 'purchases', 'purchaseAlgorithm')
-    isBuyerRetrievalNeeded = db.select('id', id, 'purchases', 'isBuyerRetrievalNeeded')
-    isReviewNeeded = db.select('id', id, 'purchases', 'isReviewNeeded')
+def publish(id, type):
+    if type == 'questions':
+        productLink = db.select('id', id, 'purchases', 'productLink')
+        purchaseCount = db.select('id', id, 'purchases', 'purchaseCount')
+        purchasePurpose = db.select('id', id, 'purchases', 'purchasePurpose')
+        isProductRetrievalPlanned = db.select('id', id, 'purchases', 'isProductRetrievalPlanned')
+        cityForPurchase = db.select('id', id, 'purchases', 'cityForPurchase')
+        purchaseAlgorithm = db.select('id', id, 'purchases', 'purchaseAlgorithm')
+        isBuyerRetrievalNeeded = db.select('id', id, 'purchases', 'isBuyerRetrievalNeeded')
+        isReviewNeeded = db.select('id', id, 'purchases', 'isReviewNeeded')
 
-    text = f'''
-Заявка на выкуп товара
+        text = f'''
+✅ Выкуп
 
 1) Товар для выкупа: {productLink}
 2) Планируемое количество выкупов: {purchaseCount}
@@ -85,4 +126,21 @@ def publish(id):
 
 Ставьте + в комментариях, продавец свяжется с вами для организации выкупа.
 '''
+    elif type == 'distribution':
+        productLink = db.select('id', id, 'distribution', 'productLink')
+        cashback = db.select('id', id, 'distribution', 'cashback')
+        algoritm = db.select('id', id, 'distribution', 'algoritm')
+        cashbackDay = db.select('id', id, 'cashbackDay', 'isProductRetrievalPlanned')
+
+        text = f'''
+🔥 Разадача
+
+1) Товар для раздачи: {productLink}
+2) Кэшбэк за товар: {cashback}
+3) Алгоритм заказа товара: {algoritm}
+4) Через сколько дней переведут кэшбэк: {cashbackDay}
+
+Ставьте + в комментариях, продавец свяжется с вами для организации выкупа.
+'''
+        
     return text

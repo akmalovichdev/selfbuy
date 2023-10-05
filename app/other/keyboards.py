@@ -30,8 +30,10 @@ def menu(message):
 
 def newQuestion(message):
     main = InlineKeyboardMarkup()
-    questions = InlineKeyboardButton(text='Разместить новый выкуп', callback_data='questions')
+    questions = InlineKeyboardButton(text='Выкуп товара', callback_data='questions')
+    distribution = InlineKeyboardButton(text='Раздача товара', callback_data='distribution')
     main.add(questions)
+    main.add(distribution)
     return main
 
 def questions(call, type):
@@ -55,6 +57,19 @@ def questions(call, type):
     main.add(KeyboardButton('Отмена'))
     return main
 
+def distribution(call, type):
+    main = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    if type == 'cashback':
+        main.add(KeyboardButton('100%'))
+        main.add(KeyboardButton('50%'))
+    elif type == 'cashbackDay':
+        main.add(KeyboardButton('Сразу'))
+        main.add(KeyboardButton('7 дней'))
+        main.add(KeyboardButton('14 дней'))
+        main.add(KeyboardButton('21 дней'))
+    main.add(KeyboardButton('Отмена'))
+    return main
+
 def privacy(message):
     main = InlineKeyboardMarkup()
     yes = InlineKeyboardButton(text='Ознакомился. Отправить на модерацию.', callback_data='yes')
@@ -63,9 +78,9 @@ def privacy(message):
     main.add(back)
     return main
 
-def publish(message, id):
+def publish(message, id, type):
     main = InlineKeyboardMarkup()
-    publish = InlineKeyboardButton(text='Опубликовать', callback_data=f'publish-{id}')
+    publish = InlineKeyboardButton(text='Опубликовать', callback_data=f'publish-{id}-{type}')
     link_button = InlineKeyboardButton("Написать", url=f"tg://user?id={message.from_user.id}")
     main.add(link_button)
     main.add(publish)

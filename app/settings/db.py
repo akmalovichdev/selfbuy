@@ -53,13 +53,18 @@ def addUser(user_id, userName):
     cursor.execute(f'''INSERT INTO users(userId, userName, joinDate) VALUES(%s,%s,%s)''', user)
     conn.commit()
 
-def addPurchase(message, data):
+def addPurchase(message, data, type):
     conn = connect()
     cursor = conn.cursor(buffered=True)
 
-    user = [message.from_user.id, data['productLink'], data['purchaseCount'], data['purchasePurpose'], data['isProductRetrievalPlanned'], data['cityForPurchase'], data['purchaseAlgorithm'], data['isBuyerRetrievalNeeded'], data['isReviewNeeded'], getNowDate()]
-    cursor.execute(f'''INSERT INTO `purchases`(`userId`, `productLink`, `purchaseCount`, `purchasePurpose`, `isProductRetrievalPlanned`, `cityForPurchase`, `purchaseAlgorithm`, `isBuyerRetrievalNeeded`, `isReviewNeeded`, `createDate`) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''', user)
-    id_of_new_row = cursor.lastrowid
+    if type == 'questions':
+        user = [message.from_user.id, data['productLink'], data['purchaseCount'], data['purchasePurpose'], data['isProductRetrievalPlanned'], data['cityForPurchase'], data['purchaseAlgorithm'], data['isBuyerRetrievalNeeded'], data['isReviewNeeded'], getNowDate()]
+        cursor.execute(f'''INSERT INTO `purchases`(`userId`, `productLink`, `purchaseCount`, `purchasePurpose`, `isProductRetrievalPlanned`, `cityForPurchase`, `purchaseAlgorithm`, `isBuyerRetrievalNeeded`, `isReviewNeeded`, `createDate`) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''', user)
+        id_of_new_row = cursor.lastrowid
+    elif type == 'distribution':
+        user = [message.from_user.id, data['productLink'], data['cashback'], data['algoritm'], data['cashbackDay'], getNowDate()]
+        cursor.execute(f'''INSERT INTO `distribution`(`userId`, `productLink`, `cashback`, `algoritm`, `cashbackDay`, `createDate`) VALUES(%s,%s,%s,%s,%s,%s)''', user)
+        id_of_new_row = cursor.lastrowid
 
     conn.commit()
 
@@ -89,9 +94,13 @@ def selectConf(conf):
 
 #########################################################################################################################################################################
 
-def updatepurchase(id):
+def updatepurchase(id, type):
     conn = connect()
     cursor = conn.cursor()
-    cursor.execute(f'''UPDATE purchases SET isActive = True WHERE id = {id}''')
+    if type == 'questions':
+        cursor.execute(f'''UPDATE purchases SET isActive = True WHERE id = {id}''')
+    elif type == 'distribution':
+        cursor.execute(f'''UPDATE distribution SET isActive = True WHERE id = {id}''')
+
     conn.commit()
     
